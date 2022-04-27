@@ -11,7 +11,7 @@ public class Region : MonoBehaviour
   public Vector3 areaPos;
   public BoxCollider2D boxCollider;
   public List<GameObject> entitysList;
-  
+  private Animator animator;
  
   //X轴
   public float width;
@@ -33,7 +33,7 @@ public class Region : MonoBehaviour
      boxCollider.size=new Vector2(width,length);
      boxCollider.isTrigger=true;
      areaPos=transform.position;
-    
+    animator=GetComponent<Animator>();
  }
  void update()
  {
@@ -107,7 +107,18 @@ areaNums2=new int[]{Num+1,Num-1,Num-widthNum,Num+widthNum};
      }
      return null;
  }
-
+public void BoomThisArea()
+{
+     Boom b=FindBoom();
+           if(b!=null&&b.haveBoomed==false)
+           {
+               b.StartBoom();
+           }
+           if(b==null)
+           {
+            animator.SetTrigger("Boom");
+           }
+}
   private void OnTriggerEnter2D(Collider2D enterCollider) {
       if(enterCollider.CompareTag("Player"))
       {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerController : BaseGameEntity
 {
-   
+    public GameObject BoomParent;
     public float KeyAValue;
     public float KeySValue;
     public float KeyDValue;
@@ -14,14 +14,14 @@ public class PlayerController : BaseGameEntity
    public int dirtion;
      public float speed;
     
-    
+ 
    private Animator animator;
    
     public override void Start()
         {
             base.Start();
             animator = GetComponent<Animator>();
-            
+         
         }
 
 
@@ -31,6 +31,7 @@ public class PlayerController : BaseGameEntity
             JudgeKey();
             CreateBoom();
             Move();
+           
         }
         private void JudgeKey()
         {
@@ -92,6 +93,7 @@ public class PlayerController : BaseGameEntity
                 GameObject obj=Instantiate(BoomPrefab,EnterRegion.areaPos,transform.rotation);
                 //把区域赋给炸弹
                 obj.GetComponent<Boom>().InRegionsList.Add(EnterRegion);
+                obj.transform.parent=BoomParent.transform;
                 
             }
         }

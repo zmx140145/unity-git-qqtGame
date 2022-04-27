@@ -60,11 +60,7 @@ public class Boom : BaseGameEntity
        //有的话向他们发送保炸的信息
        foreach(Region rg in EnterRegion.NearbyRegionWithoutDiagonalList)
        {
-           Boom b=rg.FindBoom();
-           if(b!=null&&b.haveBoomed==false)
-           {
-               MessageDispatcher.Instance.DispatchMessage(this,b,MessageType.Boom,null);
-           }
+          rg.BoomThisArea();
        }
        
    }
