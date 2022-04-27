@@ -14,7 +14,7 @@ public class Boom : BaseGameEntity
    public override void Start()
    {
        base.Start();
-       animator=GetComponent<Animator>();
+       animator=GetComponentInChildren<Animator>();
        BoomSetTime=Time.time;
        BoomTime=BoomSetTime+BoomRemainTime;
        circleCollider=GetComponent<CircleCollider2D>();
