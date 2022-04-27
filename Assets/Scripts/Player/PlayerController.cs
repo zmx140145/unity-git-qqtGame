@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : BaseGameEntity
 {
+   
     public float KeyAValue;
     public float KeySValue;
     public float KeyDValue;
@@ -16,15 +17,17 @@ public class PlayerController : BaseGameEntity
     
    private Animator animator;
    
-    private void Start()
+    public override void Start()
         {
+            base.Start();
             animator = GetComponent<Animator>();
+            
         }
 
 
-        private void Update()
+        public override void Update()
         {
-            
+            base.Update();
             JudgeKey();
             CreateBoom();
             Move();
@@ -83,11 +86,35 @@ public class PlayerController : BaseGameEntity
         }
         private void CreateBoom()
         {
-            if(BoomKey)
+            if(BoomKey&&!FindBoomInArea(EnterAreaNum))
             {
-                Instantiate(BoomPrefab,transform.position,transform.rotation);
+               
+                GameObject obj=Instantiate(BoomPrefab,EnterRegion.areaPos,transform.rotation);
+                //把区域赋给炸弹
+                obj.GetComponent<Boom>().InRegionsList.Add(EnterRegion);
                 
             }
+        }
+        private bool FindBoomInArea(int areaNum)
+        {
+            //越界
+            if(areaNum<=-1||areaNum>Map.Instance.TotalNum)
+            {
+                //那么就不能放炸弹了
+                return true;
+            }
+            //查找region上的物体 看看有没有炸弹Dic
+            Region region;
+            Map.Instance.m_RegionsDic.TryGetValue(EnterAreaNum,out region);
+            
+       foreach(GameObject obj in region.entitysList)
+       {
+        if(obj.GetComponent<Boom>())
+        {
+            return true;
+        }
+       }
+       return false;
         }
         private void Move()
         {

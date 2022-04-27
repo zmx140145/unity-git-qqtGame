@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Map : Singleton<Map>
 {
-   public Dictionary<int,Region> m_RegionsList;
+   public Dictionary<int,Region> m_RegionsDic;
+  
    //预设体
    public GameObject wall;
     public GameObject RegionPrefab;
@@ -26,10 +27,11 @@ public class Map : Singleton<Map>
    protected override void Awake()
    {
       base.Awake();
-      m_RegionsList=new Dictionary<int, Region>();
+     
+     
    }
    private void Start() {
-      
+       m_RegionsDic=new Dictionary<int, Region>();
       length=(float)(LNum*size);
      width=(float)(WNum*size);
      WidthNum=WNum-2;
@@ -64,13 +66,15 @@ public class Map : Singleton<Map>
  {
    GameObject obj= Instantiate(RegionPrefab,CalculatePos(i),Quaternion.identity);
   obj.GetComponent<Region>().Num=i;
-  m_RegionsList.Add(i,obj.GetComponent<Region>());
+  m_RegionsDic.Add(i,obj.GetComponent<Region>());
+ 
  }
  //加完之后 要给每个region 的list指定附近的region
 for(int i=0;i<TotalNum;i++)
 {
  Region region=null;
- m_RegionsList.TryGetValue(i,out region);
+ m_RegionsDic.TryGetValue(i,out region);
+
  region.InitNearbyRegionList();
 }
    }
@@ -102,4 +106,5 @@ void CalculatePos(out float Length,out float Width,int Num)
     return new Vector2 (Width,Length);
 
   }
+  
 }

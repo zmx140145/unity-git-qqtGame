@@ -9,15 +9,23 @@ public class Boom : BaseGameEntity
    private float BoomTime;
    private Animator animator;
    private CircleCollider2D circleCollider;
+   private BoxCollider2D boxCollider;
     public bool haveBoomed=false;
-   void Start()
+   public override void Start()
    {
+       base.Start();
        animator=GetComponent<Animator>();
        BoomSetTime=Time.time;
        BoomTime=BoomSetTime+BoomRemainTime;
        circleCollider=GetComponent<CircleCollider2D>();
+       boxCollider=GetComponent<BoxCollider2D>();
+       if(EnterAreaNum!=-1)
+       {
+           transform.position=Map.Instance.m_RegionsDic[EnterAreaNum].areaPos;
+       }
    }
-   private void Update() {
+   public override void Update() {
+       base.Update();
       switch((int)(BoomTime-Time.time)%3)
       {
           case 2:
@@ -39,12 +47,33 @@ public class Boom : BaseGameEntity
    }
    public void StartBoom()
    {
+       
    animator.SetTrigger("Boom");
    haveBoomed=true;
+   SendBoomToNearby();
+   }
+   public void SendBoomToNearby()
+   {
+       //n平方的复杂度
+       //去当前的region找临近的region 
+       //看看上面有没有炸弹
+       //有的话向他们发送保炸的信息
+       foreach(Region rg in EnterRegion.NearbyRegionWithoutDiagonalList)
+       {
+           Boom b=rg.FindBoom();
+           if(b!=null&&b.haveBoomed==false)
+           {
+               MessageDispatcher.Instance.DispatchMessage(this,b,MessageType.Boom,null);
+           }
+       }
+       
    }
    public void DestroyMe()
    {
-      
+       if(EnterRegion.entitysList.Contains(gameObject))
+       {
+       EnterRegion.entitysList.Remove(gameObject);
+       }
        Destroy(this.gameObject);
    }
    private void OnTriggerStay2D(Collider2D other) {
@@ -52,12 +81,15 @@ public class Boom : BaseGameEntity
       {
          
           circleCollider.enabled=false;
+         
+          
       }
    }
    private void OnTriggerExit2D(Collider2D other) {
        if(other.CompareTag("Player"))
        {
             circleCollider.enabled=true;
+            
        }
    }
     public override bool HandleMessage(Telegram msg)
