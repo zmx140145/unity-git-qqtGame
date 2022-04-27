@@ -22,6 +22,7 @@ public abstract class BaseGameEntity : MonoBehaviour
         {
            
             EnterRegion=null;
+            return;
         }
         if(EnterRegion)
         {

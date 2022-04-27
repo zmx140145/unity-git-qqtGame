@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : BaseGameEntity
 {
     public GameObject BoomParent;
+    public bool InGrass=false;
     public float KeyAValue;
     public float KeySValue;
     public float KeyDValue;
@@ -31,8 +32,21 @@ public class PlayerController : BaseGameEntity
             JudgeKey();
             CreateBoom();
             Move();
-           
+           JudgeAnimInfo();
         }
+        //根据自身的条件来改变动画机里面的值
+        private void JudgeAnimInfo()
+        {
+         if(InGrass)
+         {
+         animator.SetBool("InGrass",true);
+         }
+         else
+         {
+         animator.SetBool("InGrass",false);
+         }
+        }
+        //判断键入
         private void JudgeKey()
         {
            if(Input.GetKeyDown(KeyCode.Space))
@@ -85,6 +99,7 @@ public class PlayerController : BaseGameEntity
             }
            
         }
+        //生成炸弹
         private void CreateBoom()
         {
             if(BoomKey&&!FindBoomInArea(EnterAreaNum))
