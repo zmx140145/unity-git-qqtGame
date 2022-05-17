@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Boom
+  - StaticItem
+  - MoveableItem
   layers:
   - Default
   - TransparentFX

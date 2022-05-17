@@ -5,11 +5,13 @@ using UnityEngine;
 public class Grass : BaseGameEntity
 {
   public bool PlayerIn=false;
+  public bool PlayerInFirstStart=true;
   private Animator animator;
    public override void Start()
     {
         base.Start();
         animator=GetComponent<Animator>();
+        
     }
 
     
@@ -17,17 +19,23 @@ public class Grass : BaseGameEntity
     {
         base.Update();
         JudgeInfoInAnim();
+        transform.position=EnterRegion.areaPos;
     }
     //根据自身的值来改变动画机的值
     private void JudgeInfoInAnim()
     {
         if(PlayerIn)
         {
-        animator.SetBool("PlayerIn",true);
+            if(PlayerInFirstStart)
+            {
+        animator.SetTrigger("PlayerIn");
+        PlayerInFirstStart=false;
+            }
+        
         }
         else
         {
-             animator.SetBool("PlayerIn",false);
+          PlayerInFirstStart=true;
         }
     }
      public override bool HandleMessage(Telegram msg)

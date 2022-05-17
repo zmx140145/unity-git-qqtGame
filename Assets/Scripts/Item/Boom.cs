@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Boom : BaseGameEntity
 {
+    public BaseGameEntity Owner;
+    public int BoomPower;
    private float BoomSetTime;
    private float BoomRemainTime=3f;
    private float BoomTime;
@@ -58,14 +60,17 @@ public class Boom : BaseGameEntity
        //去当前的region找临近的region 
        //看看上面有没有炸弹
        //有的话向他们发送保炸的信息
-       foreach(Region rg in EnterRegion.NearbyRegionWithoutDiagonalList)
-       {
-          rg.BoomThisArea();
-       }
+     
+          EnterRegion.BoomThisArea(BoomPower,NextRegionDirection.all);
+      
        
    }
    public void DestroyMe()
    {
+       if(Owner)
+       {
+           MessageDispatcher.Instance.DispatchMessage(this,Owner,MessageType.haveBoomed,null);
+       }
        if(EnterRegion.entitysList.Contains(gameObject))
        {
        EnterRegion.entitysList.Remove(gameObject);
